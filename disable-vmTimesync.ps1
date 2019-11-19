@@ -14,14 +14,14 @@ if ($reply -match "[nN]")
 # Creating a hash table with key-values for the timesync advanced settings
 
 $ExtraValues = @{
-	"tools.syncTime"=0;
-	"time.synchronize.continue"=0;
-	"time.synchronize.restore"=0;
-	"time.synchronize.resume.disk"=0;
-	"time.synchronize.shrink"=0;
-	"time.synchronize.tools.startup"=0;
-	"time.synchronize.tools.enable"=0;
-    "time.synchronize.resume.host"=0 
+	"tools.syncTime"="0";
+	"time.synchronize.continue"= "0";
+	"time.synchronize.restore"= "0";
+	"time.synchronize.resume.disk"= "0";
+	"time.synchronize.shrink"= "0";
+	"time.synchronize.tools.startup"= "0";
+	"time.synchronize.tools.enable"= "0";
+    "time.synchronize.resume.host"= "0" 
 }
 
 # Get vms in Cluster 

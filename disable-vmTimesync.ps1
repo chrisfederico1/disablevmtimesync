@@ -1,5 +1,8 @@
 # The following script accepts input of Cluster "NAME" then gets all VM's in cluster and adds a Hash table with advanced settings to each VM .
 # These settings disable the time sync to the VMhost . https://kb.vmware.com/s/article/1189
+
+
+
 $Cluster = read-host 'Input Cluster Name'
 
 Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster: $Cluster" -BackgroundColor Red

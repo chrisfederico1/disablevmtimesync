@@ -27,8 +27,14 @@ $ExtraValues = @{
     "time.synchronize.resume.host"= "0" 
 }
 
-# Get vms in Cluster 
+# Get vms in Cluster
+try { 
 $vmlist = get-cluster -Name $Cluster | get-vm
+}
+catch {
+	Write-host "An Error Occured:"
+	write-host $_.ScriptStackTrace
+}
 
 foreach ($vm in $vmlist)
 {

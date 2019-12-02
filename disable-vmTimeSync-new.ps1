@@ -1,0 +1,12 @@
+function cluster () {
+
+
+
+}
+
+function SingleVM () {
+
+
+
+    
+}

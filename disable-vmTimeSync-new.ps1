@@ -49,7 +49,7 @@ try {
 
 function SingleVM ($ExtraValues) {
 
-	
+
 
 $vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = "D1WFSERVMGT01"} #| where-object {-not $_.config.template}
 

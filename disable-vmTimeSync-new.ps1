@@ -24,6 +24,10 @@ Clear-Host
 write-host "1   Cluster"
 Write-host "2   Single VM"
 
+# 1 Blank line
+""
+
+
 # Capture response from user
 $response = read-host "Enter 1 or 2"
 

@@ -49,10 +49,20 @@ try {
 
 function SingleVM ($ExtraValues) {
 
+	# Prompt User for VM Name
+	$svm = read-host "Enter VM Name"
 
+	$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = $svm} #| where-object {-not $_.config.template}
 
-$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = "D1WFSERVMGT01"} #| where-object {-not $_.config.template}
-
+	$ExtraValues | ForEach-Object GetEnumerator | ForEach-Object {
+		$extra = New-object VMware.Vim.OptionValue
+		$extra.key = $_.key
+		$extra.value=$_.value
+		$vmConfigSpec.ExtraConfig += $extra
+	}
+		# Performing commit to Virtual Machine.
+		write-host "Reconfiguring " $svm.Name
+		$vmview.ReconfigVM($vmConfigSpec)
 }
 
 

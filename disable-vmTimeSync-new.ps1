@@ -27,11 +27,23 @@ Write-host "2   Single VM"
 # 1 Blank line
 ""
 
+# Creating a hash table with key-values for the timesync advanced settings
+$ExtraValues = @{
+	"tools.syncTime"="0";
+	"time.synchronize.continue"= "0";
+	"time.synchronize.restore"= "0";
+	"time.synchronize.resume.disk"= "0";
+	"time.synchronize.shrink"= "0";
+	"time.synchronize.tools.startup"= "0";
+	"time.synchronize.tools.enable"= "0";
+    "time.synchronize.resume.host"= "0" 
+}
 
 # Capture response from user
-$response = read-host "Enter 1 or 2"
+$response = read-host "Please enter 1 or 2"
 
 switch ($response)
 {
-    "1" {}
+    "1" {ClusterVMs($ExtraValues)}
+    "2" {SingleVM($ExtraValues)}
 }

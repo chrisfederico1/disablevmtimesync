@@ -43,9 +43,18 @@ try {
 
 			Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster:" $vm.Name -BackgroundColor Red
 
+			$reply = read-host "Continue?[y/n]"
 
-			write-host "Reconfiguring " $vm.Name
-			$vmview.ReconfigVM($vmConfigSpec)
+		# Prompt user to continue
+
+		if ($reply -match "[nN]")
+		{
+		exit 
+		}
+
+
+		write-host "Reconfiguring " $vm.Name
+		$vmview.ReconfigVM($vmConfigSpec)
 		
 	}
 

@@ -68,7 +68,7 @@ function SingleVM ($ExtraValues) {
 	$svm = read-host "Enter VM Name"
 
 	try {
-		$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = $svm} -errorAction Stop #| where-object {-not $_.config.template}
+		$vmview = get-view -ViewType VirtualMachine -ErrorAction Stop -Filter @{"Name" = $svm}
 	}
 	Catch {
 

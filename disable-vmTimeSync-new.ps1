@@ -49,10 +49,15 @@ try {
 
 function SingleVM ($ExtraValues) {
 
+	# Enter Blank line
+	""
+
 	# Prompt User for VM Name
 	$svm = read-host "Enter VM Name"
 
 	$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = $svm} #| where-object {-not $_.config.template}
+
+	$vmConfigSpec = new-object VMware.Vim.VirtualMachineConfigSpec
 
 	$ExtraValues | ForEach-Object GetEnumerator | ForEach-Object {
 		$extra = New-object VMware.Vim.OptionValue
@@ -61,7 +66,8 @@ function SingleVM ($ExtraValues) {
 		$vmConfigSpec.ExtraConfig += $extra
 	}
 		# Performing commit to Virtual Machine.
-		write-host "Reconfiguring " $svm.Name
+		write-host "Reconfiguring " $svm
+		""
 		$vmview.ReconfigVM($vmConfigSpec)
 }
 
@@ -96,5 +102,6 @@ $response = read-host "Please enter 1 or 2"
 switch ($response)
 {
     "1" {ClusterVMs($ExtraValues)}
-    "2" {SingleVM($ExtraValues)}
+	"2" {SingleVM($ExtraValues)}
+	default {"Invalid Entry";break}
 }

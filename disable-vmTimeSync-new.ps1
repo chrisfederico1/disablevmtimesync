@@ -96,6 +96,9 @@ function SingleVM ($ExtraValues) {
 
 ################ Script starts here ###############
 
+Start-Transcript -path .\disablevmtimesynclog.txt -Force
+
+
 # Clear Screen
 Clear-Host
 
@@ -127,3 +130,6 @@ switch ($response)
 	"2" {SingleVM($ExtraValues)}
 	default {"Invalid Entry";break}
 }
+
+# Stop logging
+Stop-Transcript

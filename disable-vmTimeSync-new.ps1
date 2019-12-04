@@ -16,11 +16,12 @@ function ClusterVMs ($ExtraValues) {
 
 	# Get vms in Cluster
 try { 
-	$vmlist = get-cluster -Name $Cluster | get-vm
+	$vmlist = get-cluster -Name $Cluster -errorAction Stop | get-vm 
 	}
 	catch {
-		Write-host "An Error Occured:"
+		Write-host "An Error Occured: Cannot find Cluster"
 		write-host $_.ScriptStackTrace
+		exit
 	}
 
 	foreach ($vm in $vmlist)

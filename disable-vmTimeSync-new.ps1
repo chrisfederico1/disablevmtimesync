@@ -19,6 +19,7 @@ try {
 	$vmlist = get-cluster -Name $Cluster -errorAction Stop | get-vm 
 	}
 	catch {
+		# Error Handling
 		Write-host "An Error Occured: Cannot find Cluster"
 		write-host $_.ScriptStackTrace
 		exit
@@ -51,7 +52,6 @@ try {
 		exit 
 		}
 
-
 		write-host "Reconfiguring " $vm.Name
 		$vmview.ReconfigVM($vmConfigSpec)
 		
@@ -67,7 +67,17 @@ function SingleVM ($ExtraValues) {
 	# Prompt User for VM Name
 	$svm = read-host "Enter VM Name"
 
-	$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = $svm} #| where-object {-not $_.config.template}
+	try {
+		$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = $svm} -errorAction Stop #| where-object {-not $_.config.template}
+	}
+	Catch {
+
+		# Error Handling
+		Write-host "An Error Occured: Cannot find VM"
+		write-host $_.ScriptStackTrace
+		exit
+	}
+
 
 	$vmConfigSpec = new-object VMware.Vim.VirtualMachineConfigSpec
 

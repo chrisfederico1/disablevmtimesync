@@ -40,6 +40,10 @@ try {
 			$vmConfigSpec.ExtraConfig += $extra
 		}
 			# Performing commit to Virtual Machine.
+
+			Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster:" $vm.Name -BackgroundColor Red
+
+
 			write-host "Reconfiguring " $vm.Name
 			$vmview.ReconfigVM($vmConfigSpec)
 		

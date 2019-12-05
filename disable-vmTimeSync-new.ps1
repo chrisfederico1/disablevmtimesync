@@ -56,8 +56,7 @@ try {
 		$vmview.ReconfigVM($vmConfigSpec)
 		
 	}
-	# Stop logging
-	Stop-Transcript
+	
 }
 
 function SingleVM ($ExtraValues) {
@@ -96,8 +95,7 @@ function SingleVM ($ExtraValues) {
 			exit
 
 		}
-	# Stop logging
-	Stop-Transcript	
+	
 }
 
 
@@ -138,3 +136,5 @@ switch ($response)
 	default {"Invalid Entry";break}
 }
 
+# Stop logging
+Stop-Transcript

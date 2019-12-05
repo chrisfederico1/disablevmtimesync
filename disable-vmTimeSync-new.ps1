@@ -56,7 +56,8 @@ try {
 		$vmview.ReconfigVM($vmConfigSpec)
 		
 	}
-
+	# Stop logging
+	Stop-Transcript
 }
 
 function SingleVM ($ExtraValues) {
@@ -67,17 +68,10 @@ function SingleVM ($ExtraValues) {
 	# Prompt User for VM Name
 	$svm = read-host "Enter VM Name"
 
-	try {
+	
 		$vmview = get-view -ViewType VirtualMachine -ErrorAction Stop -Filter @{"Name" = $svm}
-	}
-	Catch {
-
-		# Error Handling
-		Write-host "An Error Occured: Cannot find VM"
-		write-host $_.ScriptStackTrace
-		exit
-	}
-
+	
+	
 
 	$vmConfigSpec = new-object VMware.Vim.VirtualMachineConfigSpec
 
@@ -90,7 +84,20 @@ function SingleVM ($ExtraValues) {
 		# Performing commit to Virtual Machine.
 		write-host "Reconfiguring " $svm
 		""
-		$vmview.ReconfigVM($vmConfigSpec)
+		try {
+
+			$vmview.ReconfigVM($vmConfigSpec)
+		}
+		catch {
+
+			# Error Handling
+			Write-host "An Error Occured: Cannot find VM"
+			write-host $_.ScriptStackTrace
+			exit
+
+		}
+	# Stop logging
+	Stop-Transcript	
 }
 
 
@@ -131,5 +138,3 @@ switch ($response)
 	default {"Invalid Entry";break}
 }
 
-# Stop logging
-Stop-Transcript

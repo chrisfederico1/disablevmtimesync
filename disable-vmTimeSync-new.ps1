@@ -16,7 +16,7 @@ function ClusterVMs ($ExtraValues) {
 
 	# Get vms in Cluster
 try { 
-	$vmlist = get-cluster -Name $Cluster -errorAction Stop | get-vm 
+	$vmlist = get-cluster -Name $Cluster -ErrorAction Stop | get-vm 
 	}
 	catch {
 		# Error Handling

@@ -52,7 +52,7 @@ try {
 		exit 
 		}
 
-		write-host "Reconfiguring " $vm.Name
+		write-host "INFO: Reconfiguring " $vm.Name
 		$vmview.ReconfigVM($vmConfigSpec)
 		
 	}
@@ -81,7 +81,7 @@ function SingleVM ($ExtraValues) {
 		$vmConfigSpec.ExtraConfig += $extra
 	}
 		# Performing commit to Virtual Machine.
-		write-host "Reconfiguring " $svm
+		write-host "INFO: Reconfiguring " $svm
 		""
 		try {
 

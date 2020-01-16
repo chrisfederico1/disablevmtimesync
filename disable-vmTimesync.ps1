@@ -1,21 +1,120 @@
-# The following script accepts input of Cluster "NAME" then gets all VM's in cluster and adds a Hash table with advanced settings to each VM .
+# The following script accepts input of SingleVM or Cluster Name.  
 # These settings disable the time sync to the VMhost . https://kb.vmware.com/s/article/1189
 
 
+function ClusterVMs ($ExtraValues) {
 
-$Cluster = read-host 'Input Cluster Name'
+	# Get Cluster Name
+	$Cluster = read-host 'Input Cluster Name'
+	Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster: $Cluster" -BackgroundColor Red
 
-Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster: $Cluster" -BackgroundColor Red
-
-$reply = read-host "Continue?[y/n]"
-if ($reply -match "[nN]")
-{
+	$reply = read-host "Continue?[y/n]"
+	if ($reply -match "[nN]")
+	{
 	exit 
+	}
+
+	# Get vms in Cluster
+try { 
+	$vmlist = get-cluster -Name $Cluster -ErrorAction Stop | get-vm 
+	}
+	catch {
+		# Error Handling
+		Write-host "An Error Occured: Cannot find Cluster"
+		write-host $_.ScriptStackTrace
+		exit
+	}
+
+	foreach ($vm in $vmlist)
+
+
+	{
+		$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = $vm.Name} #| where-object {-not $_.config.template}
+		
+		$vmConfigSpec = new-object VMware.Vim.VirtualMachineConfigSpec
+		
+		# Gathering settings and prepare for adding it to virtual machine settings
+		
+		$ExtraValues | ForEach-Object GetEnumerator | ForEach-Object {
+			$extra = New-object VMware.Vim.OptionValue
+			$extra.key = $_.key
+			$extra.value=$_.value
+			$vmConfigSpec.ExtraConfig += $extra
+		}
+			# Performing commit to Virtual Machine.
+			Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster:" $vm.Name -BackgroundColor Red
+			$reply = read-host "Continue?[y/n]"
+
+		# Prompt user to continue
+
+		if ($reply -match "[nN]")
+		{
+		exit 
+		}
+
+		write-host "INFO: Reconfiguring " $vm.Name
+		$vmview.ReconfigVM($vmConfigSpec)
+		
+	}
+	
+}
+
+function SingleVM ($ExtraValues) {
+
+	# Enter Blank line
+	""
+
+	# Prompt User for VM Name
+	$svm = read-host "Enter VM Name"
+
+	
+		$vmview = get-view -ViewType VirtualMachine -ErrorAction Stop -Filter @{"Name" = $svm}
+	
+	
+
+	$vmConfigSpec = new-object VMware.Vim.VirtualMachineConfigSpec
+
+	$ExtraValues | ForEach-Object GetEnumerator | ForEach-Object {
+		$extra = New-object VMware.Vim.OptionValue
+		$extra.key = $_.key
+		$extra.value=$_.value
+		$vmConfigSpec.ExtraConfig += $extra
+	}
+		# Performing commit to Virtual Machine.
+		write-host "INFO: Reconfiguring " $svm
+		""
+		try {
+
+			$vmview.ReconfigVM($vmConfigSpec)
+		}
+		catch {
+
+			# Error Handling
+			Write-host "An Error Occured: Cannot find VM"
+			write-host $_.ScriptStackTrace
+			exit
+
+		}
+	
 }
 
 
-# Creating a hash table with key-values for the timesync advanced settings
+################ Script starts here ###############
 
+Start-Transcript -path .\disablevmtimesynclog.txt -Force
+
+
+# Clear Screen
+Clear-Host
+
+# Prompt User to select Single VM or Cluster Name
+write-host "1   Cluster"
+Write-host "2   Single VM"
+
+# 1 Blank line
+""
+
+# Creating a hash table with key-values for disable time sync advanced settings
 $ExtraValues = @{
 	"tools.syncTime"="0";
 	"time.synchronize.continue"= "0";
@@ -27,32 +126,15 @@ $ExtraValues = @{
     "time.synchronize.resume.host"= "0" 
 }
 
-# Get vms in Cluster
-try { 
-$vmlist = get-cluster -Name $Cluster | get-vm
-}
-catch {
-	Write-host "An Error Occured:"
-	write-host $_.ScriptStackTrace
-}
+# Capture response from user
+$response = read-host "Please enter 1 or 2"
 
-foreach ($vm in $vmlist)
+switch ($response)
 {
-$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = $vm.Name} #| where-object {-not $_.config.template}
-#$vmview = get-view -ViewType VirtualMachine -Filter @{"Name" = "D1WFSERVMGT01"} #| where-object {-not $_.config.template}
-$vmConfigSpec = new-object VMware.Vim.VirtualMachineConfigSpec
-
-# Gathering settings and prepare for adding it to virtual machine settings
-
-$ExtraValues | ForEach-Object GetEnumerator | ForEach-Object {
-	$extra = New-object VMware.Vim.OptionValue
-	$extra.key = $_.key
-	$extra.value=$_.value
-	$vmConfigSpec.ExtraConfig += $extra
-}
-	# Performing commit to Virtual Machine.
-	write-host "Reconfiguring " $vm.Name
-	$vmview.ReconfigVM($vmConfigSpec)
-
+    "1" {ClusterVMs($ExtraValues)}
+	"2" {SingleVM($ExtraValues)}
+	default {"Invalid Entry";break}
 }
 
+# Stop logging
+Stop-Transcript

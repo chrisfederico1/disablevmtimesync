@@ -42,15 +42,15 @@ try {
 			$vmConfigSpec.ExtraConfig += $extra
 		}
 			# Performing commit to Virtual Machine.
-			Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster:" $vm.Name -BackgroundColor Red
-			$reply = read-host "Continue?[y/n]"
+			#Write-host "Warning : You are about to add advanced Time Sync Settings to all VMs in the following Cluster:" $vm.Name -BackgroundColor Red
+			#$reply = read-host "Continue?[y/n]"
 
 		# Prompt user to continue
 
-		if ($reply -match "[nN]")
-		{
-		exit 
-		}
+		#if ($reply -match "[nN]")
+		#{
+		#exit 
+		#}
 
 		write-host "INFO: Reconfiguring " $vm.Name
 		$vmview.ReconfigVM($vmConfigSpec)
